@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import router from "./routes";
+import fileUpload from 'express-fileupload';
 
 dotenv.config();
 
@@ -11,10 +12,11 @@ const isProduction = process.env.NODE_ENV === "production";
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+app.use(fileUpload());
 app.use(router);
+
 
 // / catch 404 and forward to error handler
 app.use((req, res, next) => {
