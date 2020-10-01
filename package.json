@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "12",
+    "npm": "6.13.4"
+  },
   "scripts": {
-    "start": "nodemon --exec babel-node src/index.js",
+    "start": "node --require @babel/polyfill build/index.js",
+    "dev": "nodemon --exec babel-node src/index.js",
     "test": "mocha --require @babel/register 'src/**/**spec.js'",
     "migrateTest": "node_modules/.bin/sequelize db:migrate:undo:all && node_modules/.bin/sequelize db:migrate && node_modules/.bin/sequelize db:seed:all",
     "lint": "eslint ./src",
@@ -14,8 +19,10 @@
     "migrateDb": "node_modules/.bin/sequelize db:migrate && npm run seedDb",
     "revertMigration": "node_modules/.bin/sequelize db:migrate:undo:all",
     "seedDb": "node_modules/.bin/sequelize db:seed:all",
-    "seedSuper": "npm run revertSeed && sequelize db:seed --seed 20200211104632-dummy-users",
-    "revertSeed": "sequelize db:seed:undo:all"
+    "revertSeed": "node_modules/.bin/sequelize db:seed:undo:all",
+    "clean": "rm -rf build && mkdir build",
+    "build-src": "babel -d ./build ./src -s",
+    "build": "npm run migrateDb && npm run clean && npm run build-src"
   },
   "repository": {
     "type": "git",
@@ -28,6 +35,7 @@
   },
   "homepage": "https://github.com/blaise82/job-application-system-backend#readme",
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.5",
@@ -40,15 +48,19 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.1.3",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/polyfill": "^7.11.5",
+    "@babel/runtime": "^7.11.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
     "express-validator": "^6.6.1",
     "jsonwebtoken": "^8.5.1",
     "nyc": "^15.1.0",
