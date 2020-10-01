@@ -5,7 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
-    "test": "mocha --require @babel/register 'src/**/**spec.js'"
+    "test": "mocha --require @babel/register 'src/**/**spec.js'",
+    "migrateTest": "node_modules/.bin/sequelize db:migrate:undo:all && node_modules/.bin/sequelize db:migrate && node_modules/.bin/sequelize db:seed:all",
+    "lint": "eslint ./src",
+    "lintFix": "eslint --fix ./src",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "migration": "npm run revertMigration && npm run migrateDb && npm run seedDb",
+    "migrateDb": "node_modules/.bin/sequelize db:migrate && npm run seedDb",
+    "revertMigration": "node_modules/.bin/sequelize db:migrate:undo:all",
+    "seedDb": "node_modules/.bin/sequelize db:seed:all",
+    "seedSuper": "npm run revertSeed && sequelize db:seed --seed 20200211104632-dummy-users",
+    "revertSeed": "sequelize db:seed:undo:all"
   },
   "repository": {
     "type": "git",
@@ -33,12 +43,18 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "nyc": "^15.1.0",
     "pg": "^8.3.3",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^6.3.5"
+    "sequelize": "^6.3.5",
+    "uuid": "^8.3.0"
   }
 }
